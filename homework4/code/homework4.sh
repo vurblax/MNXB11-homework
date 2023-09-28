@@ -71,9 +71,10 @@ usage(){
 ## otherwise exit with error (make sure that the exit code is not 0!)
 ## Printout the usage information using the provided `usage` function
 ## Hints: Use the information at Tutorial 4 slides: 41, 44, 47, 55, Ex4.14, 62
-if YOUR_CODE_HERE then
-   echo "Missing parameters. Exiting..."
-   YOUR_CODE_HERE
+if [[ $# -lt 1 ]]; then
+    echo "Missing parameters. Exiting..."
+    usage
+    exit 1;
 fi
 
 # E2 (1 point) Store all parameters into the following variable URL
@@ -82,12 +83,12 @@ fi
 ## Choose the proper predefined variable to use according to tutorial 4
 ## Slides: 44 and exercise 4.11
 ## See this page about Positional Parameters: https://tldp.org/LDP/abs/html/internalvariables.html
-URLS=YOUR_CODE_HERE
+URLS=$*
 
 # E3 (1 point) create the folders `PDF` and `notPDF` in the current directory
 ## Hint: you can create multiple directories with just one command.
 ## See tutorial 2 and 4 about how to create directories
-YOUR_CODE_HERE
+mkdir PDF notPDF
 
 # Start download counter - DO NOT CHANGE THIS
 COUNT=1
@@ -98,14 +99,14 @@ COUNT=1
 ## call the for running variable "url" 
 ## (see how it is used later in the messages provided)
 ## Hints: see Tutorial 4 slide 85 and exercise 4.22
-for YOUR_CODE_HERE do
+for url in ${URLS}/*; do
        
     # E5 (1 point) Create a filename for the downloaded file and place it in the
     # CURRENTINPUTFILE variable.
     ## The filename must be like: input_currentvalueofCOUNT
     ## For example: input_0 if COUNT is 0
     ## Hint: just use the COUNT variable and double quotes to create the filename
-    CURRENTINPUTFILE=YOUR_CODE_HERE
+    CURRENTINPUTFILE="input_$COUNT"
     
     # Print out what is been processing - DO NOT CHANGE THIS
     echo "Processing url $COUNT $url"
@@ -118,13 +119,13 @@ for YOUR_CODE_HERE do
     ## Hints: See https://www.linuxandubuntu.com/home/12-practical-examples-of-wget-command-on-linux?expand_article=1 about
     ## selecting a filename and https://www.gnu.org/software/wget/manual/html_node/Logging-and-Input-File-Options.html
     ## to "append" to logfile. 
-    YOUR_CODE_HERE
+    wget -a wget.log -O $CURRENTINPUTFILE $url
     
     # E7 (1 point) Test if the download was successful
     ## A successful download will make wget exit with exit status == 0
     ## Hint: use the special variable that contains the process exit value
     ## See Tutorial 4 slides 41, 45, 46 and also https://www.delftstack.com/howto/linux/bash-check-exit-code/
-    if YOUR_CODE_HERE then
+    if [[ $? == 0 ]]; then
         
         # If the download is successful:
         
@@ -136,7 +137,7 @@ for YOUR_CODE_HERE do
         ## page 49; about the pipe in Tutorial 4 slide 57-58.
         ## Test the commands and their pipe concatenation in the command line before
         ## adding to the script! 
-        YOUR_CODE_HERE
+        file $CURRENTINPUTFILE | grep -i "pdf"
         
         # E9 (5 points) Write an if..then..else that does the following:
         ## if condition: checks if the previous grep command was succesful. 
@@ -150,15 +151,15 @@ for YOUR_CODE_HERE do
         ## so that you know that the move will happen after them message is shown
         ## Hints: Read Tutorial 4 slides 48-56 and do exercises 4.13-4.15. Use the exit values
         ## described in slides 45-47, review Tutorial 1 to learn how to move files.
-        YOUR_CODE_HERE
+        if [[ $? == 0 ]]; then
             # then output message
             echo "File $CURRENTINPUTFILE is a PDF, Moving to directory PDF..."
-            YOUR_CODE_HERE
-        YOUR_CODE_HERE
+            mv $CURRENTINPUTFILE ./PDF
+        else
             # else output message
             echo "File $CURRENTINPUTFILE is not a PDF, moving to directory notPDF..."
-            YOUR_CODE_HERE
-        YOUR_CODE_HERE
+            mv $CURRENTINPUTFILE ./notPDF
+        fi
     else
        # If the download is not successful:
        
@@ -169,7 +170,7 @@ for YOUR_CODE_HERE do
        ## the download failed, but wget may have written the file already
        ## leaving clutter
        ## Hints: see tutorial 1 on how to delete files
-       YOUR_CODE_HERE
+       rm $CURRENTINPUTFILE
     fi
     
     # Increase the download counter - DO NOT CHANGE THIS
