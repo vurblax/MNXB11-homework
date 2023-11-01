@@ -1,0 +1,16 @@
+1. What is the difference between struct and class?
+
+Both are are used to define custom data types, but they differ in 
+how they handle member visibility and access control. A struct 
+defines a type with public members by default, making it suitable for 
+simple data containers. A class instead defines a type with 
+private members by default, emphasizing encapsulation and controlled 
+access to data. 
+
+3. Why do we need our class to be derived from the TObject?
+
+In ROOT, deriving a custom class from TObject provides compatibility 
+with the ROOT framework, enabling features like object identity, 
+polymorphism, memory management, and compatibility with ROOT libraries 
+and tools. It's basically needed in order for the class to work 
+seamlessly with ROOT's data structures.
